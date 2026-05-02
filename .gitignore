@@ -1,0 +1,4 @@
+node_modules/
+crate-diggers.db
+*.db
+.env
