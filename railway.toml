@@ -1,0 +1,6 @@
+[build]
+builder = "railpack"
+buildCommand = "npm install"
+
+[deploy]
+startCommand = "node server.js"
