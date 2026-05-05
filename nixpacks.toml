@@ -2,4 +2,4 @@
 cmds = ["npm install"]
 
 [start]
-cmd = "node --experimental-sqlite server.js"
+cmd = "npm start"

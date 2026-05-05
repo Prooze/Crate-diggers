@@ -1,9 +1,12 @@
 const express = require('express');
-const { DatabaseSync } = require('node:sqlite');
+const Database = require('better-sqlite3');
 const path = require('path');
 
 const app = express();
-const db = new DatabaseSync('crate-diggers.db');
+const DB_PATH = process.env.DB_PATH || './crate-diggers.db';
+const OWNER_PIN = process.env.OWNER_PIN || '1234';
+
+const db = new Database(DB_PATH);
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS suggestions (
@@ -45,6 +48,23 @@ app.patch('/api/suggestions/:id/bought', (req, res) => {
   const newBought = row.bought ? 0 : 1;
   db.prepare('UPDATE suggestions SET bought = ? WHERE id = ?').run(newBought, id);
   res.json({ ...row, bought: newBought === 1 });
+});
+
+app.post('/api/suggestions/verify-pin', (req, res) => {
+  const { pin } = req.body;
+  if (String(pin) === String(OWNER_PIN)) {
+    res.json({ success: true });
+  } else {
+    res.status(401).json({ success: false, error: 'Invalid PIN' });
+  }
+});
+
+app.delete('/api/suggestions/:id', (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  const row = db.prepare('SELECT * FROM suggestions WHERE id = ?').get(id);
+  if (!row) return res.status(404).json({ error: 'Not found' });
+  db.prepare('DELETE FROM suggestions WHERE id = ?').run(id);
+  res.json({ success: true });
 });
 
 const PORT = process.env.PORT || 3000;

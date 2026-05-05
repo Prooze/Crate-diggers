@@ -1,493 +1,693 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Crate Diggers</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --cream: #f5eedc; --tan: #e8dcc8; --brown: #3d2b1f; --gold: #c8a96e;
-    --red: #b83c28; --green: #4a7c59; --ink: #1e1510; --paper: #faf6ed;
-  }
-  body { background: var(--cream); font-family: 'Libre Baskerville', Georgia, serif; color: var(--ink); min-height: 100vh; padding-bottom: env(safe-area-inset-bottom); }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Crate Diggers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  /* HEADER */
-  .header { background: var(--brown); padding: 0 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid var(--gold); position: sticky; top: 0; z-index: 50; gap: 10px; padding-top: env(safe-area-inset-top); }
-  .logo { display: flex; align-items: center; gap: 10px; padding: 13px 0; flex-shrink: 0; }
-  .logo h1 { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 900; color: var(--cream); line-height: 1; }
-  .logo span { font-size: .58rem; color: var(--gold); letter-spacing: .15em; text-transform: uppercase; font-style: italic; display: block; }
-  .hdr-actions { display: flex; gap: 8px; align-items: center; }
-  .btn-suggest { background: var(--red); color: var(--cream); border: none; border-radius: 2px; font-family: 'Playfair Display', serif; font-size: .78rem; font-weight: 700; padding: 8px 14px; cursor: pointer; white-space: nowrap; -webkit-tap-highlight-color: transparent; }
-  .btn-owner { background: transparent; color: var(--gold); border: 1px solid #c8a96e55; border-radius: 2px; font-family: 'Libre Baskerville', serif; font-size: .72rem; padding: 7px 10px; cursor: pointer; white-space: nowrap; -webkit-tap-highlight-color: transparent; }
-  .btn-owner.on { background: var(--gold); color: var(--brown); }
+    :root {
+      --espresso:  #1e0f07;
+      --walnut:    #2c1a0e;
+      --mahogany:  #3d2314;
+      --caramel:   #7a4a1e;
+      --gold:      #c9a84c;
+      --gold-light:#e8c96a;
+      --cream:     #f5e6c8;
+      --parchment: #ede0c0;
+      --ivory:     #fdf6e3;
+      --border:    #8b6914;
+      --shadow:    rgba(0,0,0,0.55);
+    }
 
-  /* HERO */
-  .hero { background: var(--brown); padding: 32px 20px 40px; text-align: center; border-bottom: 1px solid #5a3d2e; position: relative; overflow: hidden; }
-  .hero::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 39px, #ffffff08 39px, #ffffff08 40px); }
-  .eyebrow { font-size: .6rem; letter-spacing: .25em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
-  .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 8vw, 3rem); font-weight: 900; color: var(--cream); line-height: 1.05; margin-bottom: 12px; }
-  .hero-title em { color: var(--gold); font-style: italic; }
-  .hero-sub { font-size: .82rem; color: #a08878; font-style: italic; max-width: 320px; margin: 0 auto 20px; line-height: 1.6; }
-  .stats { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-  .stat { background: #ffffff0f; border: 1px solid #ffffff1a; border-radius: 2px; padding: 5px 12px; font-size: .6rem; color: #c8b89a; letter-spacing: .1em; text-transform: uppercase; }
-  .stat b { color: var(--gold); }
-  .owner-bar { background: #243d2e; border-bottom: 2px solid var(--green); padding: 9px 20px; text-align: center; font-size: .72rem; color: #90b898; display: none; }
-  .owner-bar.show { display: block; }
-  .owner-bar b { color: #7ec89a; }
+    body {
+      font-family: 'Libre Baskerville', Georgia, serif;
+      background-color: var(--walnut);
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(0,0,0,0.08) 40px, rgba(0,0,0,0.08) 41px),
+        repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(0,0,0,0.08) 40px, rgba(0,0,0,0.08) 41px);
+      color: var(--cream);
+      min-height: 100vh;
+    }
 
-  /* DIVIDER */
-  .divider { display: flex; align-items: center; gap: 12px; padding: 20px 16px 12px; max-width: 700px; margin: 0 auto; }
-  .div-line { flex: 1; height: 1px; background: var(--gold); opacity: .35; }
-  .div-label { font-size: .6rem; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); opacity: .8; }
+    /* ── Header ── */
+    header {
+      background: linear-gradient(180deg, var(--espresso) 0%, var(--mahogany) 100%);
+      border-bottom: 3px solid var(--gold);
+      text-align: center;
+      padding: 2rem 1rem 1.5rem;
+      position: relative;
+    }
+    header::before, header::after {
+      content: '♪';
+      font-size: 2rem;
+      color: var(--gold);
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    header::before { left: 2rem; }
+    header::after  { right: 2rem; }
 
-  /* LIST */
-  .list { max-width: 700px; margin: 0 auto; padding: 0 12px 80px; display: flex; flex-direction: column; gap: 3px; }
-  .album-card { display: flex; align-items: center; gap: 12px; background: var(--paper); border: 1px solid #d8ccb8; border-left: 3px solid var(--accent, var(--gold)); padding: 10px 12px 10px 10px; position: relative; overflow: hidden; opacity: 0; transform: translateX(-10px); transition: box-shadow .2s, transform .15s, opacity .3s; }
-  .album-card.visible { opacity: 1; transform: translateX(0); }
-  .album-card.bought { opacity: .55; }
-  .album-card.bought .album-title { text-decoration: line-through; text-decoration-color: var(--green); }
-  .art-wrap { width: 68px; height: 68px; flex-shrink: 0; position: relative; border-radius: 2px; overflow: hidden; border: 1px solid #c8b89844; background: #1a1a1a; }
-  .art-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .art-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
-  .bought-stamp { position: absolute; inset: 0; background: #4a7c5990; display: flex; align-items: center; justify-content: center; font-size: .46rem; font-weight: 700; letter-spacing: .14em; color: #b0efcb; font-family: 'Playfair Display', serif; border: 2px solid #7ec89a66; }
-  .album-info { flex: 1; min-width: 0; }
-  .album-title { font-family: 'Playfair Display', serif; font-size: .93rem; font-weight: 700; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .album-artist { font-size: .72rem; color: #7a6a58; margin-top: 1px; font-style: italic; }
-  .album-note { font-size: .68rem; color: #8a7a68; margin-top: 5px; font-style: italic; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-  .album-meta { font-size: .58rem; color: #a89880; margin-top: 4px; }
-  .bought-btn { flex-shrink: 0; padding: 6px 8px; border-radius: 2px; cursor: pointer; font-family: 'Libre Baskerville', serif; font-size: .65rem; line-height: 1.3; text-align: center; transition: all .15s; border: 1px solid; display: none; -webkit-tap-highlight-color: transparent; }
-  .owner-mode .bought-btn { display: block; }
-  .bought-btn { background: transparent; color: var(--green); border-color: var(--green); }
-  .bought-btn.is-bought { background: var(--green); color: #fff; border-color: var(--green); }
-  .card-accent { position: absolute; right: 0; top: 0; bottom: 0; width: 3px; opacity: .28; }
-  .empty { text-align: center; padding: 52px 20px; color: #9a8a78; font-style: italic; }
-  .empty .icon { font-size: 2.6rem; margin-bottom: 10px; opacity: .4; }
+    .site-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      font-weight: 900;
+      font-style: italic;
+      color: var(--gold);
+      text-shadow: 2px 3px 6px var(--shadow);
+      letter-spacing: 0.03em;
+    }
+    .site-subtitle {
+      font-size: 0.85rem;
+      font-style: italic;
+      color: var(--parchment);
+      opacity: 0.8;
+      margin-top: 0.3rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
 
-  /* OVERLAY */
-  .overlay { display: none; position: fixed; inset: 0; background: #2a1f15ee; z-index: 200; align-items: center; justify-content: center; padding: 16px; padding-top: calc(16px + env(safe-area-inset-top)); }
-  .overlay.show { display: flex; }
-  .modal { background: var(--paper); border: 2px solid var(--gold); border-top: 5px solid var(--red); width: 100%; max-width: 500px; padding: 22px; position: relative; max-height: 88vh; overflow-y: auto; -webkit-overflow-scrolling: touch; animation: slideUp .2s ease; }
-  .modal h2 { font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 900; margin-bottom: 3px; }
-  .modal > p { font-size: .74rem; color: #7a6a58; font-style: italic; margin-bottom: 16px; }
-  .field { margin-bottom: 13px; }
-  label { display: block; font-size: .58rem; letter-spacing: .15em; text-transform: uppercase; color: #6a5a48; margin-bottom: 4px; }
-  input, textarea { width: 100%; background: var(--cream); border: 1px solid #c8b898; border-radius: 1px; font-family: 'Libre Baskerville', serif; font-size: 16px; color: var(--ink); padding: 9px 11px; outline: none; -webkit-appearance: none; }
-  input:focus, textarea:focus { border-color: var(--gold); }
-  textarea { resize: vertical; min-height: 56px; }
-  .modal-actions { display: flex; gap: 9px; margin-top: 16px; }
-  .btn-pri { flex: 1; background: var(--red); color: var(--cream); border: none; border-radius: 1px; cursor: pointer; font-family: 'Playfair Display', serif; font-size: .86rem; font-weight: 700; padding: 12px; -webkit-tap-highlight-color: transparent; }
-  .btn-pri:disabled { background: #a0837a; }
-  .btn-sec { background: transparent; color: var(--brown); border: 1px solid #c8b898; border-radius: 1px; cursor: pointer; font-family: 'Libre Baskerville', serif; font-size: .8rem; padding: 12px 13px; -webkit-tap-highlight-color: transparent; }
+    /* ── Owner strip ── */
+    #owner-strip {
+      background: var(--espresso);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.6rem;
+      padding: 0.5rem 1.5rem;
+      font-size: 0.78rem;
+      flex-wrap: wrap;
+    }
+    #owner-strip label { color: var(--gold); letter-spacing: 0.08em; }
+    #owner-pin-input {
+      background: var(--mahogany);
+      border: 1px solid var(--border);
+      color: var(--cream);
+      padding: 0.3rem 0.6rem;
+      border-radius: 3px;
+      font-family: inherit;
+      font-size: 0.78rem;
+      width: 90px;
+      letter-spacing: 0.15em;
+    }
+    #owner-pin-input:focus { outline: none; border-color: var(--gold); }
+    .btn-pin {
+      background: var(--gold);
+      color: var(--espresso);
+      border: none;
+      padding: 0.3rem 0.9rem;
+      border-radius: 3px;
+      font-family: 'Libre Baskerville', serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+    }
+    .btn-pin:hover { background: var(--gold-light); }
+    #owner-badge { display: none; color: var(--gold); font-weight: 700; letter-spacing: 0.1em; }
+    #owner-badge.visible { display: inline; }
+    #pin-error { color: #e06060; font-size: 0.75rem; }
 
-  /* SUGGEST FORM */
-  .pick-btn { width: 100%; background: var(--cream); border: 2px dashed #c8b898; border-radius: 2px; padding: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; font-family: 'Libre Baskerville', serif; font-size: .86rem; color: #8a7a68; -webkit-tap-highlight-color: transparent; }
-  .selected-album { display: flex; align-items: center; gap: 12px; background: var(--cream); border: 1px solid #c8b898; border-left: 3px solid var(--gold); padding: 9px 11px; }
-  .selected-art { width: 50px; height: 50px; object-fit: cover; border-radius: 2px; flex-shrink: 0; }
-  .selected-info { flex: 1; min-width: 0; }
-  .selected-title { font-family: 'Playfair Display', serif; font-size: .88rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .selected-artist { font-size: .7rem; color: #7a6a58; font-style: italic; }
-  .change-btn { background: transparent; border: 1px solid #c8b898; padding: 5px 10px; font-size: .68rem; cursor: pointer; color: #7a6a58; font-family: 'Libre Baskerville', serif; flex-shrink: 0; -webkit-tap-highlight-color: transparent; }
+    /* ── Main layout ── */
+    main { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
 
-  /* PICKER */
-  .picker-modal { max-width: 520px; padding: 0; display: flex; flex-direction: column; max-height: 88vh; }
-  .picker-head { padding: 18px 18px 0; display: flex; justify-content: space-between; align-items: flex-start; }
-  .picker-head h2 { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 900; margin-bottom: 2px; }
-  .picker-head p { font-size: .72rem; color: #7a6a58; font-style: italic; }
-  .close-x { background: transparent; border: none; font-size: 1.1rem; cursor: pointer; color: #a89880; padding: 0 4px; -webkit-tap-highlight-color: transparent; }
-  .search-wrap { margin: 12px 16px 0; display: flex; align-items: center; gap: 8px; background: var(--cream); border: 1.5px solid #c8b898; padding: 8px 11px; }
-  .search-wrap:focus-within { border-color: var(--gold); }
-  .search-wrap input { background: transparent; border: none; flex: 1; font-family: 'Libre Baskerville', serif; font-size: 16px; color: var(--ink); padding: 0; outline: none; min-width: 0; -webkit-appearance: none; }
-  .search-wrap input::placeholder { color: #b8a888; }
-  .clear-x { background: transparent; border: none; cursor: pointer; color: #a89880; font-size: .85rem; padding: 0 2px; -webkit-tap-highlight-color: transparent; }
-  .picker-results { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; border-top: 1px solid #e8dcc8; margin-top: 10px; }
-  .picker-status { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 28px 16px; color: #9a8a78; font-size: .8rem; font-style: italic; }
-  .picker-hint { padding: 28px 16px; text-align: center; color: #b8a888; font-size: .78rem; font-style: italic; }
-  .picker-row { display: flex; align-items: center; gap: 11px; width: 100%; background: transparent; border: none; border-bottom: 1px solid #ece4d4; padding: 10px 16px; cursor: pointer; text-align: left; -webkit-tap-highlight-color: transparent; }
-  .picker-row:active { background: #f0e8d4; }
-  .picker-thumb { width: 44px; height: 44px; object-fit: cover; border-radius: 2px; flex-shrink: 0; border: 1px solid #d8ccb8; }
-  .picker-thumb-ph { width: 44px; height: 44px; flex-shrink: 0; background: #1a1a1a; border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; opacity: .5; }
-  .picker-info { flex: 1; min-width: 0; }
-  .picker-album { font-family: 'Playfair Display', serif; font-size: .86rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--ink); }
-  .picker-artist { font-size: .68rem; color: #7a6a58; font-style: italic; margin-top: 1px; }
-  .spinner { width: 18px; height: 18px; border: 2px solid #c8a96e44; border-top-color: var(--gold); border-radius: 50%; animation: spin .7s linear infinite; flex-shrink: 0; }
+    /* ── Section headings ── */
+    .section-heading {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--gold);
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 0.4rem;
+      margin-bottom: 1.2rem;
+      letter-spacing: 0.04em;
+    }
+    .section-heading span { font-style: italic; }
 
-  /* PIN */
-  .pin-modal { max-width: 300px; text-align: center; }
-  .pin-modal .field { text-align: left; }
-  .pin-icon { font-size: 2rem; margin-bottom: 8px; }
-  .success-msg { text-align: center; padding: 16px 0; }
-  .success-msg .big { font-size: 2.2rem; margin-bottom: 8px; }
-  .success-msg h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--green); margin-bottom: 4px; }
-  .success-msg p { font-size: .74rem; color: #7a6a58; }
+    /* ── Suggestion form ── */
+    #suggest-section {
+      background: linear-gradient(135deg, var(--mahogany) 0%, var(--espresso) 100%);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.5rem 1.8rem;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 4px 18px var(--shadow);
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.9rem 1.2rem;
+    }
+    @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
 
-  @keyframes slideUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-  @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-7px)} 40%{transform:translateX(7px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(5px)} }
-  .shake { animation: shake .4s ease; }
-</style>
+    .form-field { display: flex; flex-direction: column; gap: 0.3rem; }
+    .form-field.full { grid-column: 1 / -1; }
+    .form-field label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+      font-weight: 700;
+    }
+    .form-field input,
+    .form-field textarea {
+      background: var(--walnut);
+      border: 1px solid var(--border);
+      color: var(--cream);
+      padding: 0.55rem 0.75rem;
+      border-radius: 4px;
+      font-family: 'Libre Baskerville', serif;
+      font-size: 0.9rem;
+      resize: vertical;
+    }
+    .form-field input:focus,
+    .form-field textarea:focus { outline: none; border-color: var(--gold); background: #3a2010; }
+    .form-field input::placeholder,
+    .form-field textarea::placeholder { color: #7a6040; }
+
+    .art-row {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .btn-art {
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-family: 'Libre Baskerville', serif;
+      font-size: 0.82rem;
+      cursor: pointer;
+      letter-spacing: 0.06em;
+    }
+    .btn-art:hover { background: rgba(201,168,76,0.15); }
+    #art-preview {
+      width: 56px; height: 56px;
+      border-radius: 4px;
+      border: 2px solid var(--border);
+      object-fit: cover;
+      display: none;
+    }
+    #art-preview.visible { display: block; }
+    #art-clear {
+      font-size: 0.75rem; color: #a07050;
+      background: none; border: none;
+      cursor: pointer; text-decoration: underline;
+      display: none;
+    }
+    #art-clear.visible { display: inline; }
+    #art-label { font-size: 0.75rem; color: #7a6040; font-style: italic; }
+
+    .form-actions { grid-column: 1 / -1; display: flex; justify-content: flex-end; }
+    .btn-submit {
+      background: linear-gradient(135deg, var(--gold) 0%, #a87c28 100%);
+      color: var(--espresso);
+      border: none;
+      padding: 0.65rem 2rem;
+      border-radius: 4px;
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem; font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.06em;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+    .btn-submit:hover { background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 100%); }
+    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+    #form-message { font-size: 0.82rem; color: #6ecb82; margin-top: 0.5rem; text-align: right; }
+    #form-error   { font-size: 0.82rem; color: #e06060; margin-top: 0.5rem; text-align: right; }
+
+    /* ── Cards ── */
+    #loading-msg { text-align: center; color: var(--gold); font-style: italic; padding: 2rem; }
+    #empty-msg { text-align: center; color: #7a6040; font-style: italic; padding: 2rem; display: none; }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.4rem;
+    }
+    .card {
+      background: linear-gradient(160deg, var(--ivory) 0%, var(--parchment) 100%);
+      color: var(--espresso);
+      border: 1px solid #c4a86a;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 3px 12px var(--shadow);
+      display: flex; flex-direction: column;
+      transition: transform 0.15s, box-shadow 0.15s;
+      position: relative;
+    }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--shadow); }
+    .card.is-bought { opacity: 0.65; }
+
+    .bought-ribbon {
+      position: absolute; top: 12px; right: -28px;
+      background: #5a8a5a; color: #fff;
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 3px 36px;
+      transform: rotate(45deg);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    }
+    .card-art {
+      width: 100%; aspect-ratio: 1; object-fit: cover;
+      border-bottom: 2px solid #c4a86a; background: #c8b88a;
+    }
+    .card-art-placeholder {
+      width: 100%; aspect-ratio: 1;
+      background: linear-gradient(135deg, #c8b88a 0%, #a89060 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3.5rem;
+      border-bottom: 2px solid #c4a86a;
+    }
+    .card-body {
+      padding: 0.9rem 1rem; flex: 1;
+      display: flex; flex-direction: column; gap: 0.3rem;
+    }
+    .card-album {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem; font-weight: 700;
+      color: var(--espresso); line-height: 1.2;
+    }
+    .card-artist { font-size: 0.85rem; color: var(--caramel); font-style: italic; }
+    .card-meta { font-size: 0.73rem; color: #6a5030; margin-top: 0.2rem; }
+    .card-note {
+      font-size: 0.82rem; color: #4a3020; font-style: italic;
+      margin-top: 0.3rem;
+      border-left: 2px solid var(--border); padding-left: 0.5rem;
+    }
+    .card-actions {
+      display: flex; gap: 0.5rem;
+      padding: 0.7rem 1rem;
+      border-top: 1px solid #d4b880;
+      background: rgba(0,0,0,0.04);
+    }
+    .btn-bought {
+      flex: 1; background: #5a8a5a; color: #fff; border: none;
+      padding: 0.4rem 0.7rem; border-radius: 3px;
+      font-family: 'Libre Baskerville', serif;
+      font-size: 0.75rem; font-weight: 700;
+      cursor: pointer; letter-spacing: 0.05em;
+    }
+    .btn-bought:hover { background: #4a7a4a; }
+    .btn-bought.unbought { background: #9a7040; }
+    .btn-bought.unbought:hover { background: #8a6030; }
+    .btn-delete {
+      background: #b04040; color: #fff; border: none;
+      padding: 0.4rem 0.7rem; border-radius: 3px;
+      font-family: 'Libre Baskerville', serif;
+      font-size: 0.75rem; cursor: pointer;
+    }
+    .btn-delete:hover { background: #903030; }
+
+    /* ── iTunes modal ── */
+    #art-modal {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.75); z-index: 1000;
+      align-items: center; justify-content: center;
+    }
+    #art-modal.open { display: flex; }
+    .modal-box {
+      background: linear-gradient(160deg, var(--mahogany) 0%, var(--espresso) 100%);
+      border: 1px solid var(--border); border-radius: 8px;
+      width: min(520px, 95vw); max-height: 85vh;
+      display: flex; flex-direction: column; overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.7);
+    }
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 1.2rem; border-bottom: 1px solid var(--border);
+    }
+    .modal-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--gold); font-style: italic; }
+    .modal-close { background: none; border: none; color: var(--parchment); font-size: 1.4rem; cursor: pointer; line-height: 1; }
+    .modal-close:hover { color: var(--gold); }
+    .modal-search {
+      display: flex; gap: 0.5rem;
+      padding: 0.9rem 1.2rem; border-bottom: 1px solid var(--border);
+    }
+    .modal-search input {
+      flex: 1; background: var(--walnut); border: 1px solid var(--border);
+      color: var(--cream); padding: 0.5rem 0.75rem; border-radius: 4px;
+      font-family: 'Libre Baskerville', serif; font-size: 0.9rem;
+    }
+    .modal-search input:focus { outline: none; border-color: var(--gold); }
+    .modal-search button {
+      background: var(--gold); color: var(--espresso); border: none;
+      padding: 0.5rem 1rem; border-radius: 4px;
+      font-family: 'Libre Baskerville', serif; font-weight: 700; cursor: pointer;
+    }
+    .modal-search button:hover { background: var(--gold-light); }
+    .modal-results {
+      overflow-y: auto; padding: 1rem 1.2rem;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; flex: 1;
+    }
+    .modal-status { padding: 1.5rem; text-align: center; color: var(--gold); font-style: italic; font-size: 0.85rem; }
+    .art-option {
+      cursor: pointer; border-radius: 4px; overflow: hidden;
+      border: 2px solid transparent;
+      transition: border-color 0.15s, transform 0.15s;
+    }
+    .art-option:hover { border-color: var(--gold); transform: scale(1.04); }
+    .art-option img { width: 100%; display: block; aspect-ratio: 1; object-fit: cover; }
+    .art-option-label {
+      background: rgba(0,0,0,0.65); color: var(--cream);
+      font-size: 0.65rem; padding: 3px 5px; line-height: 1.3;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    footer {
+      text-align: center; padding: 1.5rem;
+      font-size: 0.75rem; color: #6a5030;
+      border-top: 1px solid var(--mahogany); letter-spacing: 0.06em;
+    }
+  </style>
 </head>
 <body>
 
-<header class="header">
-  <div class="logo">
-    <svg width="28" height="28" viewBox="0 0 36 36">
-      <circle cx="18" cy="18" r="17" fill="#1a1a1a" stroke="#c8a96e" stroke-width="1"/>
-      <circle cx="18" cy="18" r="12" fill="none" stroke="#2d2d2d" stroke-width="1.5"/>
-      <circle cx="18" cy="18" r="7" fill="none" stroke="#2d2d2d" stroke-width="1.5"/>
-      <circle cx="18" cy="18" r="2.5" fill="#c8a96e"/>
-      <circle cx="18" cy="18" r="1" fill="#1a1a1a"/>
-    </svg>
-    <div>
-      <h1>Crate Diggers</h1>
-      <span>Album Suggestions</span>
-    </div>
-  </div>
-  <div class="hdr-actions">
-    <button class="btn-owner" id="ownerBtn" onclick="toggleOwnerMode()">🔒 Owner</button>
-    <button class="btn-suggest" onclick="openSuggest()">+ Suggest</button>
-  </div>
+<header>
+  <div class="site-title">The Crate Diggers</div>
+  <div class="site-subtitle">Community Album Suggestions &mdash; Dig Deep, Play Often</div>
 </header>
 
-<div class="owner-bar" id="ownerBar">
-  ✦ <b>Owner Mode</b> — tap "Mark Bought" on any card ✦
+<div id="owner-strip">
+  <span id="owner-badge">&#9733; Owner Mode Active</span>
+  <span id="pin-error"></span>
+  <label for="owner-pin-input">Owner PIN</label>
+  <input type="password" id="owner-pin-input" placeholder="&#9679;&#9679;&#9679;&#9679;" maxlength="20" />
+  <button class="btn-pin" id="verify-pin-btn">Unlock</button>
 </div>
 
-<div class="hero">
-  <div class="eyebrow">▶ Now Accepting Suggestions</div>
-  <h1 class="hero-title">What should<br>Pat <em>buy next?</em></h1>
-  <p class="hero-sub">Drop your picks — vinyl, CD, digital. If it slaps, suggest it.</p>
-  <div class="stats" id="stats"></div>
-</div>
-
-<div class="divider">
-  <div class="div-line"></div>
-  <div class="div-label">The Crate</div>
-  <div class="div-line"></div>
-</div>
-
-<div class="list" id="list"></div>
-
-<!-- SUGGEST OVERLAY -->
-<div class="overlay" id="suggestOverlay">
-  <div class="modal" id="suggestModal">
-    <h2>Suggest an Album</h2>
-    <p>Tell Pat what to throw on the turntable.</p>
-    <div id="albumPicker">
-      <button class="pick-btn" onclick="openPicker()">
-        <span style="font-size:1.3rem">＋</span> Choose an album…
-      </button>
-    </div>
-    <div class="field" style="margin-top:14px">
-      <label>Your Name *</label>
-      <input type="text" id="inputName" placeholder="Who's suggesting?" autocomplete="name">
-    </div>
-    <div class="field">
-      <label>Why should Pat buy it? (optional)</label>
-      <textarea id="inputNote" placeholder="Sell it to him…"></textarea>
-    </div>
-    <div class="modal-actions">
-      <button class="btn-sec" onclick="closeSuggest()">Cancel</button>
-      <button class="btn-pri" id="submitBtn" onclick="submitSuggestion()">Add to the Crate ▶</button>
-    </div>
-  </div>
-</div>
-
-<!-- PICKER OVERLAY -->
-<div class="overlay" id="pickerOverlay">
-  <div class="modal picker-modal">
-    <div class="picker-head">
-      <div>
-        <h2>Find an Album</h2>
-        <p>Search by artist or album title.</p>
+<main>
+  <section id="suggest-section">
+    <div class="section-heading"><span>Suggest a Record</span></div>
+    <form id="suggest-form">
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="f-artist">Artist</label>
+          <input type="text" id="f-artist" placeholder="e.g. John Coltrane" required />
+        </div>
+        <div class="form-field">
+          <label for="f-album">Album</label>
+          <input type="text" id="f-album" placeholder="e.g. A Love Supreme" required />
+        </div>
+        <div class="form-field">
+          <label for="f-by">Suggested By</label>
+          <input type="text" id="f-by" placeholder="Your name" required />
+        </div>
+        <div class="form-field">
+          <label for="f-note">Note (optional)</label>
+          <input type="text" id="f-note" placeholder="Why this album?" />
+        </div>
+        <div class="art-row">
+          <button type="button" class="btn-art" id="open-art-modal">&#9835; Search Album Art</button>
+          <img id="art-preview" src="" alt="Selected art" />
+          <button type="button" id="art-clear">Remove art</button>
+          <span id="art-label"></span>
+        </div>
+        <div class="form-actions">
+          <div>
+            <button type="submit" class="btn-submit" id="submit-btn">Add to the Crate</button>
+            <div id="form-message"></div>
+            <div id="form-error"></div>
+          </div>
+        </div>
       </div>
-      <button class="close-x" onclick="closePicker()">✕</button>
-    </div>
-    <div class="search-wrap">
-      <span style="opacity:.5;font-size:.9rem">🔍</span>
-      <input type="search" id="pickerInput" placeholder="e.g. Kanye West or Graduation…" oninput="onPickerInput(this.value)" autocomplete="off" autocorrect="off" spellcheck="false">
-      <button class="clear-x" onclick="clearPicker()" id="clearBtn" style="display:none">✕</button>
-    </div>
-    <div class="picker-results" id="pickerResults">
-      <div class="picker-hint">Start typing to search the iTunes catalogue.</div>
-    </div>
-  </div>
-</div>
+    </form>
+  </section>
 
-<!-- PIN OVERLAY -->
-<div class="overlay" id="pinOverlay">
-  <div class="modal pin-modal" id="pinModal">
-    <div class="pin-icon">🔑</div>
-    <h2>Owner Mode</h2>
-    <p style="font-size:.74rem;color:#7a6a58;font-style:italic;margin-bottom:16px">Enter your PIN.</p>
-    <div class="field">
-      <label>PIN</label>
-      <input type="password" id="pinInput" placeholder="••••" maxlength="8" onkeydown="if(event.key==='Enter')checkPin()">
+  <section id="suggestions-section">
+    <div class="section-heading"><span>The Crate</span></div>
+    <div id="loading-msg">Loading records&hellip;</div>
+    <div id="empty-msg">No suggestions yet &mdash; be the first to dig!</div>
+    <div id="cards-grid" class="cards-grid"></div>
+  </section>
+</main>
+
+<footer>Crate Diggers &mdash; All grooves preserved &mdash; &#9834;</footer>
+
+<div id="art-modal" role="dialog" aria-modal="true" aria-label="Search album art">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title">Search Album Art via iTunes</span>
+      <button class="modal-close" id="close-art-modal" aria-label="Close">&times;</button>
     </div>
-    <div class="modal-actions">
-      <button class="btn-sec" onclick="closePin()">Cancel</button>
-      <button class="btn-pri" onclick="checkPin()">Unlock</button>
+    <div class="modal-search">
+      <input type="text" id="itunes-search-input" placeholder="Artist or album name&hellip;" />
+      <button id="itunes-search-btn">Search</button>
+    </div>
+    <div id="itunes-results" class="modal-results">
+      <div class="modal-status" style="grid-column:1/-1">Enter an artist or album to search&hellip;</div>
     </div>
   </div>
 </div>
 
 <script>
-const OWNER_PIN = '1234'; // Change this
-const COLORS = ['#d4a853','#b85c38','#4a7c59','#5b6fa6','#8b4a8b'];
+  let ownerMode = false;
+  let selectedArtUrl = null;
+  let suggestions = [];
 
-let suggestions = [];
-let ownerMode = false;
-let selectedAlbum = null;
-let pickerDebounce = null;
-
-// ── API ───────────────────────────────────────────────
-async function load() {
-  try {
-    const res = await fetch('/api/suggestions');
-    suggestions = await res.json();
-  } catch { suggestions = []; }
-  render();
-}
-
-// ── RENDER ────────────────────────────────────────────
-function render() {
-  const list = document.getElementById('list');
-  const bought = suggestions.filter(s => s.bought).length;
-  const total = suggestions.length;
-
-  let statsHtml = `<div class="stat">${total} suggestion${total!==1?'s':''}</div>`;
-  if (bought > 0) statsHtml += `<div class="stat"><b>${bought}</b> bought</div>`;
-  if (total - bought > 0) statsHtml += `<div class="stat"><b>${total - bought}</b> to buy</div>`;
-  document.getElementById('stats').innerHTML = statsHtml;
-
-  if (!total) {
-    list.innerHTML = '<div class="empty"><div class="icon">🎵</div><p>No suggestions yet — be the first!</p></div>';
-    return;
+  function fmt(ts) {
+    return new Date(ts).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+  function esc(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
-  list.innerHTML = suggestions.map((s, i) => {
-    const color = COLORS[i % COLORS.length];
-    const date = new Date(s.timestamp).toLocaleDateString('en-AU', { day: 'numeric', month: 'short' });
-    const art = s.artUrl
-      ? `<img src="${s.artUrl}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
-      : '';
-    const ph = `<div class="art-placeholder" style="display:${s.artUrl?'none':'flex'}">${vinylSvg(color)}</div>`;
-    const boughtStamp = s.bought ? '<div class="bought-stamp">BOUGHT</div>' : '';
-    const boughtBtn = `<button class="bought-btn${s.bought?' is-bought':''}" onclick="toggleBought(${s.id})">${s.bought?'✓ Bought':'Mark\nBought'}</button>`;
-    return `
-      <div class="album-card${s.bought?' bought':''}" style="--accent:${color}" id="card-${s.id}">
-        <div class="art-wrap">${art}${ph}${boughtStamp}</div>
-        <div class="album-info">
-          <div class="album-title">${esc(s.album)}</div>
-          <div class="album-artist">${esc(s.artist)}</div>
-          ${s.note ? `<div class="album-note">"${esc(s.note)}"</div>` : ''}
-          <div class="album-meta">— ${esc(s.suggestedBy)} · ${date}</div>
-        </div>
-        ${boughtBtn}
-        <div class="card-accent" style="background:${color}"></div>
-      </div>`;
-  }).join('');
+  // ── Owner PIN ──
+  const pinInput   = document.getElementById('owner-pin-input');
+  const pinBtn     = document.getElementById('verify-pin-btn');
+  const pinError   = document.getElementById('pin-error');
+  const ownerBadge = document.getElementById('owner-badge');
 
-  requestAnimationFrame(() => {
-    list.querySelectorAll('.album-card').forEach((el, i) => {
-      setTimeout(() => el.classList.add('visible'), i * 50);
+  async function verifyPin() {
+    const pin = pinInput.value.trim();
+    if (!pin) return;
+    try {
+      const res = await fetch('/api/suggestions/verify-pin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pin })
+      });
+      if (res.ok) {
+        ownerMode = true;
+        ownerBadge.classList.add('visible');
+        pinInput.style.display   = 'none';
+        pinBtn.style.display     = 'none';
+        document.querySelector('#owner-strip label').style.display = 'none';
+        pinError.textContent = '';
+        renderCards();
+      } else {
+        pinError.textContent = 'Wrong PIN';
+        pinInput.value = '';
+      }
+    } catch { pinError.textContent = 'Error contacting server.'; }
+  }
+
+  pinBtn.addEventListener('click', verifyPin);
+  pinInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); verifyPin(); } });
+
+  // ── Load & render ──
+  async function loadSuggestions() {
+    try {
+      const res = await fetch('/api/suggestions');
+      suggestions = await res.json();
+      renderCards();
+    } catch {
+      document.getElementById('loading-msg').textContent = 'Failed to load suggestions.';
+    }
+  }
+
+  function renderCards() {
+    const grid    = document.getElementById('cards-grid');
+    const loading = document.getElementById('loading-msg');
+    const empty   = document.getElementById('empty-msg');
+
+    loading.style.display = 'none';
+    grid.innerHTML = '';
+
+    if (!suggestions.length) { empty.style.display = 'block'; return; }
+    empty.style.display = 'none';
+
+    suggestions.forEach(s => {
+      const card = document.createElement('div');
+      card.className = 'card' + (s.bought ? ' is-bought' : '');
+
+      const artHtml = s.artUrl
+        ? `<img class="card-art" src="${esc(s.artUrl)}" alt="Album art" loading="lazy" />`
+        : `<div class="card-art-placeholder">&#9900;</div>`;
+
+      const ribbon = s.bought ? `<div class="bought-ribbon">Bought</div>` : '';
+      const noteHtml = s.note ? `<div class="card-note">${esc(s.note)}</div>` : '';
+
+      const actionsHtml = ownerMode ? `
+        <div class="card-actions">
+          <button class="btn-bought ${s.bought ? 'unbought' : ''}" data-id="${s.id}">
+            ${s.bought ? 'Mark Unacquired' : 'Mark Bought'}
+          </button>
+          <button class="btn-delete" data-id="${s.id}">Delete</button>
+        </div>` : '';
+
+      card.innerHTML = `
+        ${ribbon}
+        ${artHtml}
+        <div class="card-body">
+          <div class="card-album">${esc(s.album)}</div>
+          <div class="card-artist">${esc(s.artist)}</div>
+          <div class="card-meta">Suggested by <strong>${esc(s.suggestedBy)}</strong> &mdash; ${fmt(s.timestamp)}</div>
+          ${noteHtml}
+        </div>
+        ${actionsHtml}
+      `;
+      grid.appendChild(card);
     });
+
+    grid.querySelectorAll('.btn-bought').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = parseInt(btn.dataset.id, 10);
+        try {
+          const res = await fetch(`/api/suggestions/${id}/bought`, { method: 'PATCH' });
+          const updated = await res.json();
+          suggestions = suggestions.map(s => s.id === id ? updated : s);
+          renderCards();
+        } catch { alert('Failed to update.'); }
+      });
+    });
+
+    grid.querySelectorAll('.btn-delete').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (!confirm('Delete this suggestion?')) return;
+        const id = parseInt(btn.dataset.id, 10);
+        try {
+          const res = await fetch(`/api/suggestions/${id}`, { method: 'DELETE' });
+          if (res.ok) {
+            suggestions = suggestions.filter(s => s.id !== id);
+            renderCards();
+          } else { alert('Failed to delete.'); }
+        } catch { alert('Failed to delete.'); }
+      });
+    });
+  }
+
+  // ── Submit form ──
+  const form      = document.getElementById('suggest-form');
+  const submitBtn = document.getElementById('submit-btn');
+  const formMsg   = document.getElementById('form-message');
+  const formErr   = document.getElementById('form-error');
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    formMsg.textContent = '';
+    formErr.textContent = '';
+    submitBtn.disabled = true;
+
+    const body = {
+      artist:      document.getElementById('f-artist').value.trim(),
+      album:       document.getElementById('f-album').value.trim(),
+      suggestedBy: document.getElementById('f-by').value.trim(),
+      note:        document.getElementById('f-note').value.trim(),
+      artUrl:      selectedArtUrl || null
+    };
+
+    try {
+      const res = await fetch('/api/suggestions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      if (res.ok) {
+        const created = await res.json();
+        suggestions.unshift(created);
+        renderCards();
+        form.reset();
+        clearArt();
+        formMsg.textContent = 'Record added to the crate!';
+        setTimeout(() => { formMsg.textContent = ''; }, 3000);
+      } else {
+        const data = await res.json();
+        formErr.textContent = data.error || 'Submission failed.';
+      }
+    } catch { formErr.textContent = 'Network error.'; }
+    finally { submitBtn.disabled = false; }
   });
 
-  document.getElementById('list').classList.toggle('owner-mode', ownerMode);
-}
+  // ── Art picker ──
+  const artModal      = document.getElementById('art-modal');
+  const openArtBtn    = document.getElementById('open-art-modal');
+  const closeArtBtn   = document.getElementById('close-art-modal');
+  const artPreview    = document.getElementById('art-preview');
+  const artClearBtn   = document.getElementById('art-clear');
+  const artLabel      = document.getElementById('art-label');
+  const itunesInput   = document.getElementById('itunes-search-input');
+  const itunesBtn     = document.getElementById('itunes-search-btn');
+  const itunesResults = document.getElementById('itunes-results');
 
-function vinylSvg(color) {
-  return `<svg width="44" height="44" viewBox="0 0 80 80"><rect width="80" height="80" fill="${color}18"/><circle cx="40" cy="40" r="28" fill="#1a1a1a"/><circle cx="40" cy="40" r="21" fill="none" stroke="#2d2d2d" stroke-width="2"/><circle cx="40" cy="40" r="14" fill="none" stroke="#2d2d2d" stroke-width="2"/><circle cx="40" cy="40" r="7" fill="none" stroke="#2d2d2d" stroke-width="2"/><circle cx="40" cy="40" r="3.5" fill="${color}"/><circle cx="40" cy="40" r="1.5" fill="#1a1a1a"/></svg>`;
-}
+  openArtBtn.addEventListener('click', () => { artModal.classList.add('open'); itunesInput.focus(); });
+  closeArtBtn.addEventListener('click', () => artModal.classList.remove('open'));
+  artModal.addEventListener('click', e => { if (e.target === artModal) artModal.classList.remove('open'); });
+  itunesBtn.addEventListener('click', searchItunes);
+  itunesInput.addEventListener('keydown', e => { if (e.key === 'Enter') searchItunes(); });
 
-function esc(s) {
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-// ── OWNER MODE ────────────────────────────────────────
-function toggleOwnerMode() {
-  if (ownerMode) {
-    ownerMode = false;
-    document.getElementById('ownerBtn').textContent = '🔒 Owner';
-    document.getElementById('ownerBtn').classList.remove('on');
-    document.getElementById('ownerBar').classList.remove('show');
-    document.getElementById('list').classList.remove('owner-mode');
-  } else {
-    document.getElementById('pinOverlay').classList.add('show');
-    document.getElementById('pinInput').value = '';
-    setTimeout(() => document.getElementById('pinInput').focus(), 100);
+  async function searchItunes() {
+    const q = itunesInput.value.trim();
+    if (!q) return;
+    itunesResults.innerHTML = '<div class="modal-status" style="grid-column:1/-1">Searching&hellip;</div>';
+    try {
+      const url = `https://itunes.apple.com/search?term=${encodeURIComponent(q)}&entity=album&limit=9&media=music`;
+      const res = await fetch(url);
+      const data = await res.json();
+      if (!data.results || !data.results.length) {
+        itunesResults.innerHTML = '<div class="modal-status" style="grid-column:1/-1">No results found.</div>';
+        return;
+      }
+      itunesResults.innerHTML = '';
+      data.results.forEach(item => {
+        const bigArt = (item.artworkUrl100 || '').replace('100x100bb', '400x400bb');
+        const el = document.createElement('div');
+        el.className = 'art-option';
+        el.title = `${item.artistName} — ${item.collectionName}`;
+        el.innerHTML = `
+          <img src="${esc(bigArt)}" alt="${esc(item.collectionName)}" loading="lazy" />
+          <div class="art-option-label">${esc(item.artistName)}<br>${esc(item.collectionName)}</div>
+        `;
+        el.addEventListener('click', () => {
+          selectArt(bigArt, `${item.artistName} — ${item.collectionName}`);
+          artModal.classList.remove('open');
+        });
+        itunesResults.appendChild(el);
+      });
+    } catch {
+      itunesResults.innerHTML = '<div class="modal-status" style="grid-column:1/-1">Search failed. Try again.</div>';
+    }
   }
-}
-function checkPin() {
-  const val = document.getElementById('pinInput').value;
-  if (val === OWNER_PIN) {
-    ownerMode = true;
-    document.getElementById('pinOverlay').classList.remove('show');
-    document.getElementById('ownerBtn').textContent = '🔓 Owner';
-    document.getElementById('ownerBtn').classList.add('on');
-    document.getElementById('ownerBar').classList.add('show');
-    document.getElementById('list').classList.add('owner-mode');
-  } else {
-    const modal = document.getElementById('pinModal');
-    modal.classList.add('shake');
-    document.getElementById('pinInput').value = '';
-    setTimeout(() => modal.classList.remove('shake'), 450);
+
+  function selectArt(url, label) {
+    selectedArtUrl = url;
+    artPreview.src = url;
+    artPreview.classList.add('visible');
+    artClearBtn.classList.add('visible');
+    artLabel.textContent = label;
   }
-}
-function closePin() { document.getElementById('pinOverlay').classList.remove('show'); }
 
-async function toggleBought(id) {
-  try {
-    const res = await fetch(`/api/suggestions/${id}/bought`, { method: 'PATCH' });
-    const updated = await res.json();
-    suggestions = suggestions.map(s => s.id === id ? updated : s);
-    render();
-  } catch {}
-}
-
-// ── SUGGEST FORM ──────────────────────────────────────
-function openSuggest() {
-  selectedAlbum = null;
-  document.getElementById('inputName').value = '';
-  document.getElementById('inputNote').value = '';
-  renderAlbumPicker();
-  document.getElementById('suggestOverlay').classList.add('show');
-}
-function closeSuggest() {
-  document.getElementById('suggestOverlay').classList.remove('show');
-  document.getElementById('suggestModal').innerHTML = `
-    <h2>Suggest an Album</h2>
-    <p>Tell Pat what to throw on the turntable.</p>
-    <div id="albumPicker"><button class="pick-btn" onclick="openPicker()"><span style="font-size:1.3rem">＋</span> Choose an album…</button></div>
-    <div class="field" style="margin-top:14px"><label>Your Name *</label><input type="text" id="inputName" placeholder="Who's suggesting?" autocomplete="name"></div>
-    <div class="field"><label>Why should Pat buy it? (optional)</label><textarea id="inputNote" placeholder="Sell it to him…"></textarea></div>
-    <div class="modal-actions">
-      <button class="btn-sec" onclick="closeSuggest()">Cancel</button>
-      <button class="btn-pri" id="submitBtn" onclick="submitSuggestion()">Add to the Crate ▶</button>
-    </div>`;
-  selectedAlbum = null;
-}
-
-function renderAlbumPicker() {
-  const wrap = document.getElementById('albumPicker');
-  if (!wrap) return;
-  if (selectedAlbum) {
-    const art = selectedAlbum.artUrl
-      ? `<img class="selected-art" src="${selectedAlbum.artUrl}" alt="">`
-      : `<div class="selected-art" style="background:#1a1a1a;display:flex;align-items:center;justify-content:center">${vinylSvg('#c8a96e')}</div>`;
-    wrap.innerHTML = `<div class="selected-album">${art}<div class="selected-info"><div class="selected-title">${esc(selectedAlbum.album)}</div><div class="selected-artist">${esc(selectedAlbum.artist)}</div></div><button class="change-btn" onclick="clearSelectedAlbum()">Change</button></div>`;
-  } else {
-    wrap.innerHTML = `<button class="pick-btn" onclick="openPicker()"><span style="font-size:1.3rem">＋</span> Choose an album…</button>`;
+  function clearArt() {
+    selectedArtUrl = null;
+    artPreview.src = '';
+    artPreview.classList.remove('visible');
+    artClearBtn.classList.remove('visible');
+    artLabel.textContent = '';
   }
-}
-function clearSelectedAlbum() { selectedAlbum = null; renderAlbumPicker(); }
 
-async function submitSuggestion() {
-  const name = document.getElementById('inputName').value.trim();
-  const note = document.getElementById('inputNote').value.trim();
-  if (!selectedAlbum || !name) return;
+  artClearBtn.addEventListener('click', clearArt);
 
-  const btn = document.getElementById('submitBtn');
-  btn.disabled = true;
-
-  try {
-    const res = await fetch('/api/suggestions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        artist: selectedAlbum.artist,
-        album: selectedAlbum.album,
-        artUrl: selectedAlbum.artUrl || null,
-        suggestedBy: name,
-        note
-      })
-    });
-    const entry = await res.json();
-    suggestions = [entry, ...suggestions];
-    document.getElementById('suggestModal').innerHTML = `<div class="success-msg"><div class="big">🎶</div><h3>Nice pick!</h3><p>Added to the crate.</p></div>`;
-    render();
-    setTimeout(closeSuggest, 2000);
-  } catch {
-    btn.disabled = false;
-  }
-}
-
-// ── PICKER ────────────────────────────────────────────
-function openPicker() {
-  document.getElementById('pickerOverlay').classList.add('show');
-  document.getElementById('pickerInput').value = '';
-  document.getElementById('clearBtn').style.display = 'none';
-  document.getElementById('pickerResults').innerHTML = '<div class="picker-hint">Start typing to search the iTunes catalogue.</div>';
-  setTimeout(() => document.getElementById('pickerInput').focus(), 100);
-}
-function closePicker() { document.getElementById('pickerOverlay').classList.remove('show'); }
-function clearPicker() {
-  document.getElementById('pickerInput').value = '';
-  document.getElementById('clearBtn').style.display = 'none';
-  document.getElementById('pickerResults').innerHTML = '<div class="picker-hint">Start typing to search the iTunes catalogue.</div>';
-  document.getElementById('pickerInput').focus();
-}
-
-function onPickerInput(val) {
-  document.getElementById('clearBtn').style.display = val ? 'block' : 'none';
-  clearTimeout(pickerDebounce);
-  if (!val.trim()) {
-    document.getElementById('pickerResults').innerHTML = '<div class="picker-hint">Start typing to search the iTunes catalogue.</div>';
-    return;
-  }
-  document.getElementById('pickerResults').innerHTML = '<div class="picker-status"><div class="spinner"></div><span>Searching…</span></div>';
-  pickerDebounce = setTimeout(() => doSearch(val), 500);
-}
-
-async function doSearch(query) {
-  try {
-    const q = encodeURIComponent(query);
-    const url = `https://itunes.apple.com/search?term=${q}&media=music&entity=album&limit=25`;
-    const res = await fetch(url);
-    const data = await res.json();
-    const seen = new Set();
-    const results = (data.results || [])
-      .filter(r => r.artworkUrl100 && r.collectionName && r.artistName)
-      .filter(r => { if (seen.has(r.collectionId)) return false; seen.add(r.collectionId); return true; })
-      .map(r => ({
-        album: r.collectionName,
-        artist: r.artistName,
-        artUrl: r.artworkUrl100.replace('100x100bb', '400x400bb'),
-        year: r.releaseDate ? new Date(r.releaseDate).getFullYear() : null,
-      }));
-    renderPickerResults(results);
-  } catch(e) {
-    document.getElementById('pickerResults').innerHTML = `<div class="picker-hint">Search error: ${esc(e.message)}</div>`;
-  }
-}
-
-function renderPickerResults(results) {
-  const el = document.getElementById('pickerResults');
-  if (!results.length) { el.innerHTML = '<div class="picker-hint">No albums found — try a different search.</div>'; return; }
-  el.innerHTML = results.map((r, i) => `
-    <button class="picker-row" onclick="selectAlbum(${i})" data-idx="${i}">
-      <img class="picker-thumb" src="${r.artUrl}" alt="" onerror="this.style.display='none'">
-      <div class="picker-info">
-        <div class="picker-album">${esc(r.album)}</div>
-        <div class="picker-artist">${esc(r.artist)}${r.year ? ' · ' + r.year : ''}</div>
-      </div>
-    </button>`).join('');
-  el._results = results;
-}
-
-function selectAlbum(idx) {
-  const results = document.getElementById('pickerResults')._results;
-  if (!results) return;
-  selectedAlbum = results[idx];
-  closePicker();
-  renderAlbumPicker();
-}
-
-// ── INIT ──────────────────────────────────────────────
-load();
+  loadSuggestions();
 </script>
 </body>
 </html>
